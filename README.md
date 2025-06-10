@@ -1,35 +1,16 @@
 # Simple Dashboard
 
-This example shows a minimal dashboard similar to **n8n** that allows you to add ECharts widgets backed by MongoDB collections. Drag-and-drop layout is handled by **Gridstack.js**.
+## 项目简介
+Simple Dashboard 是一个最小化的仪表盘示例，类似于 **n8n** 的面板功能。后端采用 Node.js 与 Express 搭配 MongoDB 提供数据接口，前端使用 Gridstack.js 负责拖拽布局，图表渲染则由 ECharts 完成。用户可以在界面上自由添加图表，每个图表从 MongoDB 指定集合读取数据并以柱状图形式展示。
 
-## Setup
-
-1. Install dependencies
-
-```bash
-npm install
+## 目录结构
 ```
-
-2. Seed example data (requires local MongoDB running at `mongodb://localhost:27017`)
-
-```bash
-npm run seed
+.
+├── server.js          # Express 服务入口，提供 /data/:collection 接口并托管静态文件
+├── seed.js            # 初始化 MongoDB 示例数据
+├── public/
+│   └── index.html     # 前端页面，包含 Gridstack 与 ECharts 逻辑
+├── package.json       # 项目依赖与 npm 脚本
+├── package-lock.json
+└── README.md
 ```
-
-3. Start the server
-
-```bash
-npm start
-```
-
-4. Open <http://localhost:3000> in your browser. Click **Add Chart** to create a new chart widget. Use **Export** to download the dashboard layout as `dashboard.json` and **Import** to load it back. Each widget pulls data from the `sampledata` collection and renders a bar chart with ECharts.
-
-## Files
-
-- `server.js` – Express server providing a `/data/:collection` API and serving static files.
-- `public/index.html` – Front-end using Gridstack.js for layout and ECharts for rendering.
-- `seed.js` – Seeds the `sampledata` collection with example documents.
-
-## Exporting and Importing
-
-Use the **Export** button to download the current dashboard layout as a JSON file. You can later restore the dashboard by clicking **Import** and selecting the previously saved file.
