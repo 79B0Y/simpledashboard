@@ -22,10 +22,14 @@ npm run seed
 npm start
 ```
 
-4. Open <http://localhost:3000> in your browser. Click **Add Chart** to create a new chart widget. Each widget pulls data from the `sampledata` collection and renders a bar chart with ECharts.
+4. Open <http://localhost:3000> in your browser. Click **Add Chart** to create a new chart widget. Use **Export** to download the dashboard layout as `dashboard.json` and **Import** to load it back. Each widget pulls data from the `sampledata` collection and renders a bar chart with ECharts.
 
 ## Files
 
 - `server.js` – Express server providing a `/data/:collection` API and serving static files.
 - `public/index.html` – Front-end using Gridstack.js for layout and ECharts for rendering.
 - `seed.js` – Seeds the `sampledata` collection with example documents.
+
+## Exporting and Importing
+
+Use the **Export** button to download the current dashboard layout as a JSON file. You can later restore the dashboard by clicking **Import** and selecting the previously saved file.

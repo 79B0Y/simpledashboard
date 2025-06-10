@@ -12,6 +12,9 @@
 </head>
 <body>
   <button id="addChart">Add Chart</button>
+  <button id="export">Export</button>
+  <button id="import">Import</button>
+  <input type="file" id="fileInput" accept="application/json" style="display:none" />
   <div class="grid-stack"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gridstack.js/4.3.1/gridstack-h5.js"></script>
@@ -19,13 +22,25 @@
   <script>
     const grid = GridStack.init({ float: true });
 
-    document.getElementById('addChart').addEventListener('click', async () => {
-      const node = grid.addWidget(`<div class="grid-stack-item-content"><div class="chart-container"></div></div>`, {w:4, h:4});
+    document.getElementById('addChart').addEventListener('click', () => {
+      addChart({ w: 4, h: 4, collection: 'sampledata' });
+    });
+
+    document.getElementById('export').addEventListener('click', exportDashboard);
+    document.getElementById('import').addEventListener('click', () => document.getElementById('fileInput').click());
+    document.getElementById('fileInput').addEventListener('change', importDashboard);
+
+    function addChart(opts) {
+      const node = grid.addWidget(
+        `<div class="grid-stack-item-content"><div class="chart-container"></div></div>`,
+        opts
+      );
+      node.dataset.collection = opts.collection;
       const chartDom = node.querySelector('.chart-container');
       const chart = echarts.init(chartDom);
-      const data = await fetchData('sampledata');
-      chart.setOption(buildOption(data));
-    });
+      fetchData(opts.collection).then(data => chart.setOption(buildOption(data)));
+      return node;
+    }
 
     async function fetchData(collection) {
       const res = await fetch(`/data/${collection}`);
@@ -39,6 +54,34 @@
         yAxis: { type: 'value' },
         series: [{ type: 'bar', data: data.map(d => d.value) }]
       };
+    }
+
+    function exportDashboard() {
+      const layout = Array.from(document.querySelectorAll('.grid-stack-item')).map(el => ({
+        x: parseInt(el.getAttribute('gs-x')) || 0,
+        y: parseInt(el.getAttribute('gs-y')) || 0,
+        w: parseInt(el.getAttribute('gs-w')) || 1,
+        h: parseInt(el.getAttribute('gs-h')) || 1,
+        collection: el.dataset.collection || 'sampledata'
+      }));
+      const blob = new Blob([JSON.stringify(layout, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'dashboard.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    async function importDashboard(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      const layout = JSON.parse(text);
+      grid.removeAll();
+      for (const w of layout) {
+        addChart(w);
+      }
+      e.target.value = '';
     }
   </script>
 </body>
