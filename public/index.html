@@ -19,8 +19,16 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gridstack.js/4.3.1/gridstack-h5.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js"></script>
-  <script>
-    const grid = GridStack.init({ float: true });
+    <script>
+      const grid = GridStack.init({ float: true });
+
+      const defaultLayout = [
+        { x: 0, y: 0, w: 4, h: 4, collection: 'sampledata' },
+        { x: 4, y: 0, w: 4, h: 4, collection: 'sampledata' },
+        { x: 8, y: 0, w: 4, h: 4, collection: 'sampledata' }
+      ];
+
+      defaultLayout.forEach(addChart);
 
     document.getElementById('addChart').addEventListener('click', () => {
       addChart({ w: 4, h: 4, collection: 'sampledata' });
